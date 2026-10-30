@@ -1,10 +1,9 @@
 # gl-coffee
 
-Сайт gl-coffee. Поки що це копія сайту [SaySushi](https://github.com/D1ms0n/saysushi): дизайн і контент ще будуть замінені.
+Сайт кав'ярні / бару GL Coffee (Desna Residence). Фото з Instagram [@gl__coffee](https://instagram.com/gl__coffee).
 
 - `index.html`: сторінка, стилі й логіка
-- `data/menu.js`: меню, ціни й зони доставки
-- `img/`: фото
+- `img/coffee/`: фото
 - `fonts/`: шрифти Onest і Unbounded (OFL), щоб не залежати від Google Fonts
 
 Хоститься на GitHub Pages: https://d1ms0n.github.io/gl-coffee/
