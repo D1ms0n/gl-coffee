@@ -157,12 +157,20 @@ section{padding:64px 0}
 .banners{display:grid;gap:16px}
 @media (min-width:900px){.banners{grid-template-columns:1.5fr 1fr}}
 .banner{position:relative;overflow:hidden;border-radius:28px;min-height:320px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;color:#fff;isolation:isolate}
-.banner > img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform 1.2s}
-.banner:hover > img{transform:scale(1.04)}
+.banner > img,.banner > video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform 1.2s}
+.banner:hover > img,.banner:hover > video{transform:scale(1.04)}
 .banner::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(16,15,18,0) 25%,rgba(16,15,18,.86) 100%)}
 .banner h3{font-size:clamp(24px,3vw,36px);max-width:520px}
 .banner p{margin:10px 0 0;max-width:440px;opacity:.85}
 .banner .btn{margin-top:18px;align-self:flex-start}
+/* ---------- services carousel ---------- */
+.svc-arrows{display:none;gap:8px}
+@media (min-width:960px){.svc-arrows{display:flex}}
+.svc-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;margin:0 -16px;padding:0 16px;scroll-padding:0 16px}
+@media (min-width:768px){.svc-track{margin:0 -32px;padding:0 32px;scroll-padding:0 32px}}
+.svc-track::-webkit-scrollbar{display:none}
+.svc-track .banner{flex:0 0 min(76vw,300px);aspect-ratio:9/14;min-height:0;padding:22px;scroll-snap-align:start}
+.svc-track h3{font-size:22px}
 /* ---------- contacts ---------- */
 .cta-box{
   position:relative;overflow:hidden;border-radius:32px;background:var(--graphite);color:#F7F2EC;
@@ -246,6 +254,44 @@ footer{padding:48px 0 calc(32px + env(safe-area-inset-bottom));border-top:1px so
         <h3>Якісна та смачна кава</h3>
         <p>Солодощі без цукру та коктейлі на основі кави.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" style="padding-top:0" aria-roledescription="carousel" aria-label="Послуги GL Coffee">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>Послуги</h2>
+      <div class="svc-arrows">
+        <button type="button" class="icon-btn" data-svc="-1" aria-label="Попередня послуга"><svg><use href="#i-left"/></svg></button>
+        <button type="button" class="icon-btn" data-svc="1" aria-label="Наступна послуга"><svg><use href="#i-right"/></svg></button>
+      </div>
+    </div>
+    <div class="svc-track reveal" id="svcTrack">
+      <article class="banner">
+        <video src="img/services/karaoke.mp4" poster="img/services/karaoke.jpg" muted loop playsinline preload="none" aria-label="Караоке у GL Coffee"></video>
+        <h3>Караоке без майдану</h3>
+      </article>
+      <article class="banner">
+        <img src="img/services/coworking.jpg" alt="Гість малює за дитячим столиком у GL Coffee" style="object-position:62% 50%" loading="lazy">
+        <h3>Коворкінг для ітішників</h3>
+      </article>
+      <article class="banner">
+        <video src="img/services/chickens.mp4" poster="img/services/chickens.jpg" muted loop playsinline preload="none" aria-label="Гостя у капелюсі-курці біля вітрини"></video>
+        <h3>Свіжі курочки</h3>
+      </article>
+      <article class="banner">
+        <img src="img/services/listen.jpg" alt="Гість за барною стійкою GL Coffee" loading="lazy">
+        <h3>Тут вас вислухають</h3>
+      </article>
+      <article class="banner">
+        <video src="img/services/guests.mp4" poster="img/services/guests.jpg" muted loop playsinline preload="none" aria-label="Гостя у хутряній шапці біля вітрини"></video>
+        <h3>Стильні гості</h3>
+      </article>
+      <article class="banner">
+        <img src="img/services/sparklers.jpg" alt="Гості з бенгальськими вогнями" loading="lazy">
+      </article>
     </div>
   </div>
 </section>
@@ -359,6 +405,22 @@ $("#themeBtn").onclick = () => {
   $$("[data-car]").forEach(b => b.onclick = () => go(idx + +b.dataset.car));
   addEventListener("resize", () => track.scrollTo({ left: idx * track.clientWidth }));
   mark(0); schedule();
+})();
+
+/* ---------- services carousel ---------- */
+(function(){
+  const track = $("#svcTrack"), reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  $$("[data-svc]").forEach(b => b.onclick = () => {
+    const step = track.firstElementChild.offsetWidth + 16;
+    const end = track.scrollLeft + track.clientWidth >= track.scrollWidth - 1;
+    const left = +b.dataset.svc > 0 && end ? 0 : track.scrollLeft + step * b.dataset.svc;
+    track.scrollTo({ left, behavior: reduce ? "auto" : "smooth" });
+  });
+  if (reduce) return;
+  const seen = new IntersectionObserver(es => es.forEach(en => {
+    if (en.isIntersecting) en.target.play().catch(() => {}); else en.target.pause();
+  }), { threshold:.6 });
+  $$("video", track).forEach(v => seen.observe(v));
 })();
 
 /* ---------- header, reveal ---------- */
